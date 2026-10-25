@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScamShield AI — Scam & Phishing Detection</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>ScamShield <span class="highlight">AI</span></h1>
+          <p class="tagline">Intelligent Scam & Phishing Detection powered by Google Gemma</p>
+        </div>
+      </div>
+      <div class="header-status">
+        <div id="system-status" class="status-pill status-loading">
+          <span class="status-dot"></span>
+          <span id="status-text">Connecting to backend...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Input Card -->
+      <section class="card input-card">
+        <div class="card-header">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            <h2>Analyze Suspicious Message</h2>
+          </div>
+          <div class="language-wrapper">
+            <label for="language-select">Analysis Language / విశ్లేషణ భాష:</label>
+            <select id="language-select" class="select-input">
+              <option value="english" selected>English</option>
+              <option value="telugu">తెలుగు (Telugu)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Sample Buttons Bar -->
+        <div class="samples-bar">
+          <span class="samples-label">Quick Samples:</span>
+          <div class="samples-buttons">
+            <button type="button" class="sample-btn" data-lang="english" data-sample="kyc">Bank KYC Threat (SMS)</button>
+            <button type="button" class="sample-btn" data-lang="english" data-sample="lottery">Lottery Prize (WhatsApp)</button>
+            <button type="button" class="sample-btn" data-lang="english" data-sample="job">Work-from-Home Job Scam</button>
+            <button type="button" class="sample-btn" data-lang="english" data-sample="legit">Safe Bank Notification</button>
+            <button type="button" class="sample-btn sample-te" data-lang="telugu" data-sample="telugu_kyc">తెలుగు: బ్యాంక్ KYC ఫ్రాడ్</button>
+          </div>
+        </div>
+
+        <!-- Message Textarea -->
+        <div class="textarea-wrapper">
+          <textarea
+            id="message-input"
+            rows="7"
+            maxlength="10000"
+            placeholder="Paste suspicious SMS, WhatsApp message, email body, or message containing suspicious links here... (గరిష్టంగా 10,000 అక్షరాలు)"
+          ></textarea>
+        </div>
+
+        <div class="card-footer">
+          <div class="char-counter">
+            <span id="char-count">0</span> / 10,000 characters
+          </div>
+          <div class="button-group">
+            <button type="button" id="clear-btn" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+              Clear
+            </button>
+            <button type="button" id="analyze-btn" class="btn btn-primary">
+              <span class="btn-spinner" id="analyze-spinner" aria-hidden="true"></span>
+              <svg id="analyze-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <span id="analyze-btn-text">Analyze Message</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Alert Box for Notifications & Errors -->
+      <div id="alert-box" class="alert hidden" role="alert">
+        <div class="alert-icon" id="alert-icon"></div>
+        <div class="alert-content">
+          <div class="alert-title" id="alert-title"></div>
+          <div class="alert-message" id="alert-message"></div>
+        </div>
+        <button type="button" class="alert-close" id="alert-close" aria-label="Close alert">&times;</button>
+      </div>
+
+      <!-- Results Section -->
+      <section id="results-section" class="results-section hidden">
+        <!-- Risk Level Banner -->
+        <div id="risk-card" class="risk-card">
+          <div class="risk-header">
+            <div class="risk-badge-group">
+              <span class="risk-badge" id="risk-badge">HIGH RISK</span>
+              <span class="risk-subtitle" id="risk-subtitle">Threat Detected</span>
+            </div>
+            <span class="result-language-tag" id="result-language-tag">Language: English</span>
+          </div>
+          <div class="risk-summary">
+            <h3>Summary Assessment</h3>
+            <p id="risk-summary-text"></p>
+          </div>
+        </div>
+
+        <!-- 2-Column Grid: Warning Signs & Safety Advice -->
+        <div class="results-grid">
+          <!-- Indicators -->
+          <div class="card result-card">
+            <div class="card-header borderless">
+              <div class="section-title text-amber">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/>
+                  <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                <h3>Warning Signs (Red Flags)</h3>
+              </div>
+            </div>
+            <ul id="indicators-list" class="styled-list indicators-list"></ul>
+          </div>
+
+          <!-- Safety Advice -->
+          <div class="card result-card">
+            <div class="card-header borderless">
+              <div class="section-title text-emerald">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <polyline points="9 12 12 15 16 10"/>
+                </svg>
+                <h3>Practical Safety Advice</h3>
+              </div>
+            </div>
+            <ul id="advice-list" class="styled-list advice-list"></ul>
+          </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="disclaimer-banner">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+          <p id="disclaimer-text"></p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>ScamShield AI &copy; 2026 &bull; Secure Local MVP &bull; Running Gemma via Gemini API &bull; Never share OTPs or passwords.</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
